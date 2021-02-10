@@ -24,6 +24,7 @@ const models = {
   Template: require('./template/Template'),
   http: require('./_fetch/http/server'),
   wtf: wtf,
+  parse: require('./template/_parsers/parse'),
 }
 let templates = require('./template/templates')
 
