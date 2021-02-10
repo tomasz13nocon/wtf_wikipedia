@@ -47,6 +47,25 @@ const known = {
   'hockey team player': true,
   'hockey team start': true,
   mlbbioret: true,
+
+  'book': true,
+  'comic book': true,
+  'comic story': true,
+  'comic story arc': true,
+  'comic series': true,
+  'comic strip': true,
+  'trade paperback': true,
+  'webstrip': true,
+  'short story': true,
+  'reference book': true,
+  'media': true,
+  'video game': true,
+  'movie': true,
+  'television series': true,
+  'television season': true,
+  'television episode': true,
+  'audiobook': true,
+  'book series': true,
 }
 //
 const isInfobox = function (name) {
