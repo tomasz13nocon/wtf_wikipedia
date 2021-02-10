@@ -94,7 +94,10 @@ const methods = {
       url += '#' + this.anchor()
     }
     return url
-  }
+  },
+  offset: function() {
+    return this.data.offset
+  },
 }
 Object.keys(methods).forEach(k => {
   Link.prototype[k] = methods[k]

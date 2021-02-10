@@ -13,6 +13,20 @@ const removeLinks = function(line) {
 const getLinks = function(data) {
   let wiki = data.text
   let links = parseLinks(wiki) || []
+
+  data.ast = []
+  let last = 0;
+  for (let link of links) {
+    if (last !== link.offset)
+      data.ast.push({ type: "text", text: wiki.slice(last, link.offset) })
+    //data.ast.push({ type: `${link.type} link`, instance: link, page: link.page, ...(link.text && {text: link.text}), ...(link.site && {href: link.site}) })
+    data.ast.push(link)
+    last = link.offset + link.raw.length + 1
+    delete link.offset
+  }
+  if (last !== wiki.length)
+    data.ast.push({ type: "text", text: wiki.slice(last, wiki.length) })
+  
   data.links = links.map(link => {
     wiki = wiki.replace(link.raw, link.text || link.page || '')
     delete link.raw

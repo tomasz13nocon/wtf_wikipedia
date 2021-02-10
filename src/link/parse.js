@@ -4,13 +4,14 @@ const external_link = /\[(https?|news|ftp|mailto|gopher|irc)(:\/\/[^\]\| ]{4,150
 const link_reg = /\[\[(.{0,160}?)\]\]([a-z]+)?/gi //allow dangling suffixes - "[[flanders]]s"
 
 const external_links = function (links, str) {
-  str.replace(external_link, function (raw, protocol, link, text) {
+  str.replace(external_link, function (raw, protocol, link, text, offset) {
     text = text || ''
     links.push({
       type: 'external',
       site: protocol + link,
       text: text.trim(),
       raw: raw,
+      offset: offset,
     })
     return text
   })
@@ -19,7 +20,7 @@ const external_links = function (links, str) {
 
 const internal_links = function (links, str) {
   //regular links
-  str.replace(link_reg, function (raw, s, suffix) {
+  str.replace(link_reg, function (raw, s, suffix, offset) {
     let txt = null
     //make a copy of original
     let link = s
@@ -47,6 +48,7 @@ const internal_links = function (links, str) {
     let obj = {
       page: link,
       raw: raw,
+      offset: offset,
     }
     obj.page = obj.page.replace(/#(.*)/, (a, b) => {
       obj.anchor = b

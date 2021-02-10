@@ -65,6 +65,9 @@ const methods = {
   json: function (options) {
     return toJSON(this, options)
   },
+  ast: function () {
+    return this.data.ast || []
+  },
 }
 
 Object.keys(methods).forEach((k) => {
