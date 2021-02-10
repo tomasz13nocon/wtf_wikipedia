@@ -239,7 +239,9 @@ test('redirectTo - get - should initially be null', (t) => {
 
 test('redirectTo - get - if the page is a redirect than return the target page', (t) => {
   let doc = wtf('#DOORVERWIJZING [[Doelpagina]]')
-  t.deepEqual(doc.redirectTo(), {page: 'Doelpagina', raw: '[[Doelpagina]]'}, 'the redirectTo equals \'Doelpagina\'')
+  let redirect = doc.redirectTo()
+  t.equal(redirect.page, 'Doelpagina', 'the redirectTo page equals \'Doelpagina\'')
+  t.equal(redirect.raw, '[[Doelpagina]]', 'the redirectTo raw equals \'[[Doelpagina]]\'')
   t.end()
 })
 
@@ -252,7 +254,9 @@ test('redirectsTo - get - should initially be null', (t) => {
 
 test('redirectsTo - get - if the page is a redirect than return the target page', (t) => {
   let doc = wtf('#DOORVERWIJZING [[Doelpagina]]')
-  t.deepEqual(doc.redirectsTo(), {page: 'Doelpagina', raw: '[[Doelpagina]]'}, 'the redirectsTo equals \'Doelpagina\'')
+  let redirect = doc.redirectsTo()
+  t.equal(redirect.page, 'Doelpagina', 'the redirectsTo page equals \'Doelpagina\'')
+  t.equal(redirect.raw, '[[Doelpagina]]', 'the redirectsTo raw equals \'[[Doelpagina]]\'')
   t.end()
 })
 
@@ -265,7 +269,9 @@ test('redirect - get - should initially be null', (t) => {
 
 test('redirect - get - if the page is a redirect than return the target page', (t) => {
   let doc = wtf('#DOORVERWIJZING [[Doelpagina]]')
-  t.deepEqual(doc.redirect(), {page: 'Doelpagina', raw: '[[Doelpagina]]'}, 'the redirect equals \'Doelpagina\'')
+  let redirect = doc.redirect()
+  t.equal(redirect.page, 'Doelpagina', 'the redirect page equals \'Doelpagina\'')
+  t.equal(redirect.raw, '[[Doelpagina]]', 'the redirect raw equals \'[[Doelpagina]]\'')
   t.end()
 })
 
@@ -278,7 +284,9 @@ test('redirects - get - should initially be null', (t) => {
 
 test('redirects - get - if the page is a redirect than return the target page', (t) => {
   let doc = wtf('#DOORVERWIJZING [[Doelpagina]]')
-  t.deepEqual(doc.redirects(), {page: 'Doelpagina', raw: '[[Doelpagina]]'}, 'the redirects equals \'Doelpagina\'')
+  let redirect = doc.redirects()
+  t.equal(redirect.page, 'Doelpagina', 'the redirects page equals \'Doelpagina\'')
+  t.equal(redirect.raw, '[[Doelpagina]]', 'the redirects raw equals \'[[Doelpagina]]\'')
   t.end()
 })
 
