@@ -19,10 +19,9 @@ const getLinks = function(data) {
   for (let link of links) {
     if (last !== link.offset)
       data.ast.push({ type: "text", text: wiki.slice(last, link.offset) })
-    //data.ast.push({ type: `${link.type} link`, instance: link, page: link.page, ...(link.text && {text: link.text}), ...(link.site && {href: link.site}) })
-    data.ast.push(link)
-    last = link.offset + link.raw.length + 1
+    last = link.offset + link.raw.length
     delete link.offset
+    data.ast.push({ ...link, type: `${link.type || "internal"} link` })
   }
   if (last !== wiki.length)
     data.ast.push({ type: "text", text: wiki.slice(last, wiki.length) })
