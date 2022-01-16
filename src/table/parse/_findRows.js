@@ -1,13 +1,13 @@
 //remove top-bottoms
-const cleanup = function(lines) {
-  lines = lines.filter(line => {
+const cleanup = function (lines) {
+  lines = lines.filter((line) => {
     //a '|+' row is a 'table caption', remove it.
     return line && /^\|\+/.test(line) !== true
   })
-  if (/^{\|/.test(lines[0]) === true) {
+  if (/^\{\|/.test(lines[0]) === true) {
     lines.shift()
   }
-  if (/^\|}/.test(lines[lines.length - 1]) === true) {
+  if (/^\|\}/.test(lines[lines.length - 1]) === true) {
     lines.pop()
   }
   if (/^\|-/.test(lines[0]) === true) {
@@ -17,7 +17,7 @@ const cleanup = function(lines) {
 }
 
 //turn newline seperated into '|-' seperated
-const findRows = function(lines) {
+const findRows = function (lines) {
   let rows = []
   let row = []
   lines = cleanup(lines)
@@ -32,12 +32,12 @@ const findRows = function(lines) {
       }
     } else {
       //look for '||' inline row-splitter
-      line = line.split(/(?:\|\||!!)/)
+      line = line.split(/(?:\|\||!!)/) //eslint-disable-line
       //support newline -> '||'
       if (!line[0] && line[1]) {
         line.shift()
       }
-      line.forEach(l => {
+      line.forEach((l) => {
         l = l.replace(/^\| */, '')
         l = l.trim()
         row.push(l)

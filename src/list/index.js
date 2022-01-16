@@ -1,9 +1,9 @@
 const List = require('./List')
 const parseSentence = require('../04-sentence/').fromText
-const list_reg = /^[#\*:;\|]+/
-const bullet_reg = /^\*+[^:,\|]{4}/
-const number_reg = /^ ?\#[^:,\|]{4}/
-const has_word = /[a-z_0-9\]\}]/i
+const list_reg = /^[#*:;|]+/
+const bullet_reg = /^\*+[^:,|]{4}/
+const number_reg = /^ ?#[^:,|]{4}/
+const has_word = /[a-z_0-9\]}]/i
 
 // does it start with a bullet point or something?
 const isList = function (line) {
@@ -47,7 +47,6 @@ const grabList = function (lines, i) {
 const parseList = function (paragraph) {
   let wiki = paragraph.wiki
   let lines = wiki.split(/\n/g)
-  // lines = lines.filter(l => has_word.test(l));
   let lists = []
   let theRest = []
   for (let i = 0; i < lines.length; i++) {
@@ -61,7 +60,7 @@ const parseList = function (paragraph) {
       theRest.push(lines[i])
     }
   }
-  paragraph.lists = lists.map((l) => new List(l))
+  paragraph.lists = lists.map((l) => new List(l, wiki))
   paragraph.wiki = theRest.join('\n')
 }
 module.exports = parseList

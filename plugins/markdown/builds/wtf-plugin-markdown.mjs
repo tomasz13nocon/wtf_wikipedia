@@ -1,14 +1,14 @@
-/* wtf-plugin-markdown 0.2.0  MIT */
-var defaults = {
+/* wtf-plugin-markdown 0.2.2  MIT */
+const defaults$4 = {
   redirects: true,
   infoboxes: true,
   templates: true,
   sections: true
-}; // we should try to make this look like the wikipedia does, i guess.
+}; //we should try to make this look like the wikipedia does, i guess.
 
-var softRedirect = function softRedirect(doc) {
-  var link = doc.redirectTo();
-  var href = link.page;
+const softRedirect = function (doc) {
+  let link = doc.redirectTo();
+  let href = link.page;
   href = './' + href.replace(/ /g, '_');
 
   if (link.anchor) {
@@ -19,10 +19,10 @@ var softRedirect = function softRedirect(doc) {
 }; //turn a Doc object into a markdown string
 
 
-var toMarkdown = function toMarkdown(options) {
-  options = Object.assign({}, defaults, options);
-  var data = this.data;
-  var md = ''; //if it's a redirect page, give it a 'soft landing':
+const toMarkdown$6 = function (options) {
+  options = Object.assign({}, defaults$4, options);
+  let data = this;
+  let md = ''; //if it's a redirect page, give it a 'soft landing':
 
   if (options.redirects === true && this.isRedirect() === true) {
     return softRedirect(this); //end it here
@@ -30,32 +30,26 @@ var toMarkdown = function toMarkdown(options) {
 
 
   if (options.infoboxes === true && options.templates === true) {
-    md += this.infoboxes().map(function (infobox) {
-      return infobox.markdown(options);
-    }).join('\n\n');
+    md += this.infoboxes().map(infobox => infobox.markdown(options)).join('\n\n');
   } //render each section
 
 
   if (options.sections === true || options.paragraphs === true || options.sentences === true) {
-    md += data.sections.map(function (s) {
-      return s.markdown(options);
-    }).join('\n\n');
+    md += data.sections().map(s => s.markdown(options)).join('\n\n');
   } //default false
 
 
   if (options.references === true) {
     md += '## References';
-    md += this.citations().map(function (c) {
-      return c.json(options);
-    }).join('\n');
+    md += this.citations().map(c => c.json(options)).join('\n');
   }
 
   return md;
 };
 
-var _01Doc = toMarkdown;
+var _01Doc = toMarkdown$6;
 
-var defaults$1 = {
+const defaults$3 = {
   headers: true,
   images: true,
   tables: true,
@@ -63,14 +57,14 @@ var defaults$1 = {
   paragraphs: true
 };
 
-var doSection = function doSection(options) {
-  options = Object.assign({}, defaults$1, options);
-  var md = ''; //make the header
+const doSection = function (options) {
+  options = Object.assign({}, defaults$3, options);
+  let md = ''; //make the header
 
   if (options.headers === true && this.title()) {
-    var header = '##';
+    let header = '##';
 
-    for (var i = 0; i < this.depth; i += 1) {
+    for (let i = 0; i < this.depth(); i += 1) {
       header += '#';
     }
 
@@ -79,47 +73,39 @@ var doSection = function doSection(options) {
 
 
   if (options.images === true) {
-    var images = this.images();
+    let images = this.images();
 
     if (images.length > 0) {
-      md += images.map(function (img) {
-        return img.markdown();
-      }).join('\n');
+      md += images.map(img => img.markdown()).join('\n');
       md += '\n';
     }
-  } //make a mardown table
+  } //make a markdown table
 
 
   if (options.tables === true) {
-    var tables = this.tables();
+    let tables = this.tables();
 
     if (tables.length > 0) {
       md += '\n';
-      md += tables.map(function (table) {
-        return table.markdown(options);
-      }).join('\n');
+      md += tables.map(table => table.markdown(options)).join('\n');
       md += '\n';
     }
-  } //make a mardown bullet-list
+  } //make a markdown bullet-list
 
 
   if (options.lists === true) {
-    var lists = this.lists();
+    let lists = this.lists();
 
     if (lists.length > 0) {
-      md += lists.map(function (list) {
-        return list.markdown(options);
-      }).join('\n');
+      md += lists.map(list => list.markdown(options)).join('\n');
       md += '\n';
     }
   } //finally, write the sentence text.
 
 
   if (options.paragraphs === true || options.sentences === true) {
-    md += this.paragraphs().map(function (p) {
-      return p.sentences().map(function (s) {
-        return s.markdown(options);
-      }).join(' ');
+    md += this.paragraphs().map(p => {
+      return p.sentences().map(s => s.markdown(options)).join(' ');
     }).join('\n\n');
   }
 
@@ -128,16 +114,16 @@ var doSection = function doSection(options) {
 
 var _02Section = doSection;
 
-var defaults$2 = {
+const defaults$2 = {
   sentences: true
 };
 
-var toMarkdown$1 = function toMarkdown(options) {
+const toMarkdown$5 = function (options) {
   options = Object.assign({}, defaults$2, options);
-  var md = '';
+  let md = '';
 
   if (options.sentences === true) {
-    md += this.sentences().reduce(function (str, s) {
+    md += this.sentences().reduce((str, s) => {
       str += s.markdown(options) + '\n';
       return str;
     }, {});
@@ -146,15 +132,14 @@ var toMarkdown$1 = function toMarkdown(options) {
   return md;
 };
 
-var _03Paragraph = toMarkdown$1;
+var _03Paragraph = toMarkdown$5;
 
-//escape a string like 'fun*2.Co' for a regExpr
 function escapeRegExp(str) {
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  return str.replace(/[\-[\]/{}()*+?.\\^$|]/g, '\\$&');
 } //sometimes text-replacements can be ambiguous - words used multiple times..
 
 
-var smartReplace = function smartReplace(all, text, result) {
+const smartReplace$1 = function (all, text, result) {
   if (!text || !all) {
     return all;
   }
@@ -165,7 +150,7 @@ var smartReplace = function smartReplace(all, text, result) {
 
   text = escapeRegExp(text); //try a word-boundary replace
 
-  var reg = new RegExp('\\b' + text + '\\b');
+  let reg = new RegExp('\\b' + text + '\\b');
 
   if (reg.test(all) === true) {
     all = all.replace(reg, result);
@@ -178,70 +163,68 @@ var smartReplace = function smartReplace(all, text, result) {
   return all;
 };
 
-var smartReplace_1 = smartReplace;
+var smartReplace_1 = smartReplace$1;
 
-var defaults$3 = {
+const smartReplace = smartReplace_1;
+const defaults$1 = {
   links: true,
   formatting: true
 }; //create links, bold, italic in markdown
 
-var toMarkdown$2 = function toMarkdown(options) {
-  options = Object.assign({}, defaults$3, options);
-  var md = this.text(); //turn links back into links
+const toMarkdown$4 = function (options) {
+  options = Object.assign({}, defaults$1, options);
+  let md = this.text(); //turn links back into links
 
   if (options.links === true) {
-    this.links().forEach(function (link) {
-      var mdLink = link.markdown();
-      var str = link.text() || link.page();
-      md = smartReplace_1(md, str, mdLink);
+    this.links().forEach(link => {
+      let mdLink = link.markdown();
+      let str = link.text() || link.page();
+      md = smartReplace(md, str, mdLink);
     });
   } //turn bolds into **bold**
 
 
   if (options.formatting === true) {
-    this.bold().forEach(function (b) {
-      md = smartReplace_1(md, b, '**' + b + '**');
+    this.bolds().forEach(b => {
+      md = smartReplace(md, b, '**' + b + '**');
     }); //support *italics*
 
-    this.italic().forEach(function (i) {
-      md = smartReplace_1(md, i, '*' + i + '*');
+    this.italics().forEach(i => {
+      md = smartReplace(md, i, '*' + i + '*');
     });
   }
 
   return md;
 };
 
-var _04Sentence = toMarkdown$2;
+var _04Sentence = toMarkdown$4;
 
-// add `[text](href)` to the text
-var toMarkdown$3 = function toMarkdown() {
-  var href = this.href();
+const toMarkdown$3 = function () {
+  let href = this.href();
   href = href.replace(/ /g, '_'); // href = encodeURIComponent(href)
 
-  var str = this.text() || this.page();
+  let str = this.text() || this.page();
   return '[' + str + '](' + href + ')';
 };
 
 var _05Link = toMarkdown$3;
 
-//markdown images are like this: ![alt text](href)
-var toMarkdown$4 = function toMarkdown() {
-  var alt = this.data.file.replace(/^(file|image):/i, '');
+const toMarkdown$2 = function () {
+  let alt = this.data.file.replace(/^(file|image):/i, '');
   alt = alt.replace(/\.(jpg|jpeg|png|gif|svg)/i, '');
   return '![' + alt + '](' + this.thumbnail() + ')';
 };
 
-var image = toMarkdown$4;
+var image$1 = toMarkdown$2;
 
-//center-pad each cell, to make the table more legible
-var pad = function pad(str, cellWidth) {
+const pad$2 = (str, cellWidth) => {
   str = str || '';
   str = String(str);
   cellWidth = cellWidth || 15;
-  var diff = cellWidth - str.length;
+  let diff = cellWidth - str.length;
   diff = Math.ceil(diff / 2);
 
-  for (var i = 0; i < diff; i += 1) {
+  for (let i = 0; i < diff; i += 1) {
     str = ' ' + str;
 
     if (str.length < cellWidth) {
@@ -252,63 +235,60 @@ var pad = function pad(str, cellWidth) {
   return str;
 };
 
-var pad_1 = pad;
+var pad_1 = pad$2;
 
-var dontDo = {
+const dontDo = {
   image: true,
   caption: true,
   alt: true,
   signature: true,
   'signature alt': true
 };
-var defaults$4 = {
+const defaults = {
   images: true
 }; //
-// render an infobox as a table with two columns, key + value
 
-var doInfobox = function doInfobox(options) {
-  var _this = this;
+const pad$1 = pad_1; // render an infobox as a table with two columns, key + value
 
-  options = Object.assign({}, defaults$4, options);
-  var md = '|' + pad_1('', 35) + '|' + pad_1('', 30) + '|\n';
-  md += '|' + pad_1('---', 35) + '|' + pad_1('---', 30) + '|\n'; //todo: render top image here (somehow)
+const doInfobox = function (options) {
+  options = Object.assign({}, defaults, options);
+  let md = '|' + pad$1('', 35) + '|' + pad$1('', 30) + '|\n';
+  md += '|' + pad$1('---', 35) + '|' + pad$1('---', 30) + '|\n'; //todo: render top image here (somehow)
 
-  Object.keys(this.data).forEach(function (k) {
+  Object.keys(this.data).forEach(k => {
     if (dontDo[k] === true) {
       return;
     }
 
-    var key = '**' + k + '**';
-    var s = _this.data[k];
-    var val = s.markdown(options); //markdown is more newline-sensitive than wiki
+    let key = '**' + k + '**';
+    let s = this.data[k];
+    let val = s.markdown(options); //markdown is more newline-sensitive than wiki
 
     val = val.split(/\n/g).join(', ');
-    md += '|' + pad_1(key, 35) + '|' + pad_1(val, 30) + ' |\n';
+    md += '|' + pad$1(key, 35) + '|' + pad$1(val, 30) + ' |\n';
   });
   return md;
 };
 
-var infobox = doInfobox;
+var infobox$1 = doInfobox;
 
-//
-var toMarkdown$5 = function toMarkdown(options) {
-  return this.lines().map(function (s) {
-    var str = s.markdown(options);
+const toMarkdown$1 = function (options) {
+  return this.lines().map(s => {
+    let str = s.markdown(options);
     return ' * ' + str;
   }).join('\n');
 };
 
-var list = toMarkdown$5;
+var list$1 = toMarkdown$1;
 
-//
-var toMarkdown$6 = function toMarkdown() {
+const toMarkdown = function () {
   if (this.data && this.data.url && this.data.title) {
     return "\u2303 [".concat(this.data.title, "](").concat(this.data.url, ")");
   } else if (this.data.encyclopedia) {
     return "\u2303 ".concat(this.data.encyclopedia);
   } else if (this.data.title) {
     //cite book, etc
-    var str = this.data.title;
+    let str = this.data.title;
 
     if (this.data.author) {
       str += this.data.author;
@@ -326,8 +306,9 @@ var toMarkdown$6 = function toMarkdown() {
   return '';
 };
 
-var reference = toMarkdown$6;
+var reference$1 = toMarkdown;
 
+const pad = pad_1;
 /* this is a markdown table:
 | Tables        | Are           | Cool  |
 | ------------- |:-------------:| -----:|
@@ -336,26 +317,24 @@ var reference = toMarkdown$6;
 | zebra stripes | are neat      |    $1 |
 */
 
-var makeRow = function makeRow(arr) {
-  arr = arr.map(function (s) {
-    return pad_1(s, 14);
-  });
+const makeRow = arr => {
+  arr = arr.map(s => pad(s, 14));
   return '| ' + arr.join(' | ') + ' |';
 }; //markdown tables are weird
 
 
-var doTable = function doTable(options) {
-  var md = '';
+const doTable = function (options) {
+  let md = '';
 
   if (!this || this.length === 0) {
     return md;
   }
 
-  var rows = this.data;
-  var keys = Object.keys(rows[0]); //first, grab the headers
+  let rows = this.data;
+  let keys = Object.keys(rows[0]); //first, grab the headers
   //remove auto-generated number keys
 
-  var headers = keys.map(function (k) {
+  let headers = keys.map(k => {
     if (/^col[0-9]/.test(k) === true) {
       return '';
     }
@@ -364,13 +343,11 @@ var doTable = function doTable(options) {
   }); //draw the header (necessary!)
 
   md += makeRow(headers) + '\n';
-  md += makeRow(headers.map(function () {
-    return '---';
-  })) + '\n'; //do each row..
+  md += makeRow(headers.map(() => '---')) + '\n'; //do each row..
 
-  md += rows.map(function (row) {
+  md += rows.map(row => {
     //each column..
-    var arr = keys.map(function (k) {
+    let arr = keys.map(k => {
       if (!row[k]) {
         return '';
       }
@@ -383,14 +360,25 @@ var doTable = function doTable(options) {
   return md + '\n';
 };
 
-var table = doTable;
+var table$1 = doTable;
 
-var plugin = function plugin(models) {
-  models.Doc.prototype.markdown = _01Doc;
-  models.Section.prototype.markdown = _02Section;
-  models.Paragraph.prototype.markdown = _03Paragraph;
-  models.Sentence.prototype.markdown = _04Sentence;
-  models.Link.prototype.markdown = _05Link;
+const doc = _01Doc;
+const section = _02Section;
+const paragraph = _03Paragraph;
+const sentence = _04Sentence;
+const link = _05Link;
+const image = image$1;
+const infobox = infobox$1;
+const list = list$1;
+const reference = reference$1;
+const table = table$1;
+
+const plugin = function (models) {
+  models.Doc.prototype.markdown = doc;
+  models.Section.prototype.markdown = section;
+  models.Paragraph.prototype.markdown = paragraph;
+  models.Sentence.prototype.markdown = sentence;
+  models.Link.prototype.markdown = link;
   models.Image.prototype.markdown = image;
   models.Infobox.prototype.markdown = infobox;
   models.Table.prototype.markdown = table;
@@ -400,4 +388,4 @@ var plugin = function plugin(models) {
 
 var src = plugin;
 
-export default src;
+export { src as default };

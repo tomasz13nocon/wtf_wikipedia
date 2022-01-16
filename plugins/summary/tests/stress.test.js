@@ -8,7 +8,7 @@ const path = require('path')
 //   console.log(cat, '\n\n')
 //   wtf.parseCategory(cat).then((res) => {
 //     res.docs.forEach((doc) => {
-//       console.log(doc.sentences(0).text())
+//       console.log(doc.sentence().text())
 //       // console.log(padEnd(doc.title(), 26) + '       ' + doc.summary({ article: false }) || '-')
 //     })
 //   })
@@ -19,17 +19,20 @@ test('first-sentence cleanup summary', (t) => {
   let arr = fs
     .readFileSync(abs)
     .toString()
-    .split(/\n/)
+    .split(/\r?\n/)
     .filter((s) => s)
+
   let count = 0
   arr.forEach((txt) => {
     let str = wtf(txt).summary({ article: false })
-    // console.log(str)
     if (str) {
       count += 1
     }
   })
-  let want = parseInt(arr.length * 0.8, 10)
-  t.ok(count > want, count + ' > ' + want)
+
+  let want = arr.length * 0.75
+
+  console.log(count, want)
+  t.ok(count > want, 'stress test failed: ' + count + ' > ' + want)
   t.end()
 })

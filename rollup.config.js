@@ -1,8 +1,8 @@
-import commonjs from 'rollup-plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
 import { terser } from 'rollup-plugin-terser'
-import babel from 'rollup-plugin-babel'
-import alias from '@rollup/plugin-alias'
+import { babel } from '@rollup/plugin-babel'
 import sizeCheck from 'rollup-plugin-filesize-check'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 import { version } from './package.json'
 console.log('\n 📦  - running rollup..\n')
@@ -13,10 +13,11 @@ export default [
   {
     input: 'src/index.js',
     output: [{ banner: banner, file: 'builds/wtf_wikipedia.mjs', format: 'esm' }],
-    external: ['https'],
+    external: ['isomorphic-unfetch'],
     plugins: [
       commonjs(),
       babel({
+        babelHelpers: "bundled",
         babelrc: false,
         presets: ['@babel/preset-env'],
       }),
@@ -32,13 +33,16 @@ export default [
         file: 'builds/wtf_wikipedia.js',
         format: 'umd',
         name: 'wtf',
-        globals: { https: 'https' },
+        globals: {
+          "isomorphic-unfetch": 'unfetch'
+        }
       },
     ],
-    external: ['https'],
+    external: ['isomorphic-unfetch'],
     plugins: [
       commonjs(),
       babel({
+        babelHelpers: "bundled",
         babelrc: false,
         presets: ['@babel/preset-env'],
       }),
@@ -55,21 +59,20 @@ export default [
         file: 'builds/wtf_wikipedia-client.js',
         format: 'umd',
         name: 'wtf',
-        sourcemap: false,
+        sourcemap: false
       },
     ],
     plugins: [
+      nodeResolve({
+        browser: true
+      }),
       commonjs(),
       babel({
+        babelHelpers: "bundled",
         babelrc: false,
         presets: ['@babel/preset-env'],
       }),
-      alias({
-        entries: [
-          { find: './http/server', replacement: './http/client' },
-          { find: './_fetch/http/server', replacement: './_fetch/http/client' },
-        ],
-      }),
+
     ],
   },
   // === client-side min.js ===
@@ -85,16 +88,14 @@ export default [
       },
     ],
     plugins: [
+      nodeResolve({
+        browser: true
+      }),
       commonjs(),
       babel({
+        babelHelpers: "bundled",
         babelrc: false,
         presets: ['@babel/preset-env'],
-      }),
-      alias({
-        entries: [
-          { find: './http/server', replacement: './http/client' },
-          { find: './_fetch/http/server', replacement: './_fetch/http/client' },
-        ],
       }),
       terser(),
       sizeCheck({ expect: 123, warn: 10 }),
@@ -113,16 +114,14 @@ export default [
       },
     ],
     plugins: [
+      nodeResolve({
+        browser: true
+      }),
       commonjs(),
       babel({
+        babelHelpers: "bundled",
         babelrc: false,
         presets: ['@babel/preset-env'],
-      }),
-      alias({
-        entries: [
-          { find: './http/server', replacement: './http/client' },
-          { find: './_fetch/http/server', replacement: './_fetch/http/client' },
-        ],
       }),
       terser(),
       sizeCheck({ expect: 123, warn: 10 }),

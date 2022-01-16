@@ -1,13 +1,14 @@
-/* wtf-plugin-wikitext 0.2.0  MIT */
+/* wtf-plugin-wikitext 1.1.1  MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.wtfWikitext = factory());
-}(this, (function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.wtfWikitext = factory());
+})(this, (function () { 'use strict';
 
-  var defaults = {
+  const defaults$3 = {
     images: true,
     tables: true,
+    templates: true,
     infoboxes: true,
     categories: true,
     lists: true,
@@ -15,10 +16,10 @@
     paragraphs: true
   };
 
-  var toWiki = function toWiki(options) {
+  const toWiki$a = function (options) {
     options = options || {};
-    options = Object.assign({}, defaults, options);
-    var text = ''; //if it's a redirect page
+    options = Object.assign({}, defaults$3, options);
+    let text = ''; //if it's a redirect page
 
     if (this.isRedirect() === true) {
       return "#REDIRECT [[".concat(this.redirectTo().page, "]]");
@@ -26,39 +27,32 @@
 
 
     if (options.infoboxes === true) {
-      text += this.infoboxes().map(function (i) {
-        return i.wikitext(options);
-      }).join('\n');
+      text += this.infoboxes().map(i => i.makeWikitext(options)).join('\n');
     } //render each section
 
 
     if (options.sections === true || options.paragraphs === true || options.sentences === true) {
-      var sections = this.sections(); // sections = sections.filter((s) => s.title() !== 'References')
-
-      text += sections.map(function (s) {
-        return s.wikitext(options);
-      }).join('\n');
+      let sections = this.sections();
+      text += sections.map(s => s.makeWikitext(options)).join('\n');
     } // add categories on the bottom
 
 
     if (options.categories === true) {
       text += '\n';
-      this.categories().forEach(function (cat) {
-        return text += "\n[[Category: ".concat(cat, "]]");
-      });
+      this.categories().forEach(cat => text += "\n[[Category: ".concat(cat, "]]"));
     }
 
     return text;
   };
 
-  var _01Doc = toWiki;
+  var _01Doc = toWiki$a;
 
-  var defaults$1 = {};
+  const defaults$2 = {};
 
-  var doTemplate = function doTemplate(obj) {
-    var data = '';
-    var name = obj.template;
-    Object.keys(obj).forEach(function (k) {
+  const doTemplate = function (obj) {
+    let data = '';
+    let name = obj.template;
+    Object.keys(obj).forEach(k => {
       if (k !== 'template') {
         data += " | ".concat(k, " = ").concat(obj[k]);
       }
@@ -66,77 +60,75 @@
     return "{{".concat(name).concat(data, "}} ");
   };
 
-  var toWiki$1 = function toWiki(options) {
+  const toWiki$9 = function (options) {
     options = options || {};
-    options = Object.assign({}, defaults$1, options);
-    var text = '';
+    options = Object.assign({}, defaults$2, options);
+    let text = '';
 
     if (this.title()) {
-      var side = '==';
+      let side = '==';
       text += "\n".concat(side, " ").concat(this.title(), " ").concat(side, "\n");
     } // render some templates?
 
 
-    this.templates().forEach(function (tmpl) {
-      text += doTemplate(tmpl) + '\n';
-    }); //make a table
+    if (options.templates === true) {
+      this.templates().forEach(tmpl => {
+        text += doTemplate(tmpl.json()) + '\n';
+      });
+    } //make a table
+
 
     if (options.tables === true) {
-      text += this.tables().map(function (t) {
-        return t.wikitext(options);
-      }).join('\n');
+      text += this.tables().map(t => t.makeWikitext(options)).join('\n');
     } // make a html bullet-list
 
 
     if (options.lists === true) {
-      text += this.lists().map(function (list) {
-        return list.text(options);
-      }).join('\n');
+      text += this.lists().map(list => list.text(options)).join('\n');
     }
 
-    text += this.paragraphs().map(function (p) {
-      return p.wikitext(options);
+    text += this.paragraphs().map(p => {
+      return p.makeWikitext(options);
     }).join('\n'); // render references
     // these will be out of place
 
-    this.references().forEach(function (ref) {
-      text += ref.wikitext(options) + '\n';
+    this.references().forEach(ref => {
+      text += ref.makeWikitext(options) + '\n';
     });
     return text;
   };
 
-  var _02Section = toWiki$1;
+  var _02Section = toWiki$9;
 
-  var defaults$2 = {};
+  const defaults$1 = {};
 
-  var toWiki$2 = function toWiki(options) {
+  const toWiki$8 = function (options) {
     options = options || {};
-    options = Object.assign({}, defaults$2, options);
-    var text = ''; // do images
+    options = Object.assign({}, defaults$1, options);
+    let text = ''; // do images
 
-    this.images().forEach(function (img) {
-      text += img.wikitext();
+    this.images().forEach(img => {
+      text += img.makeWikitext();
     }); // do lists
 
-    this.lists().forEach(function (list) {
-      text += list.wikitext();
+    this.lists().forEach(list => {
+      text += list.makeWikitext();
     }); // render sentences
 
-    text += this.sentences().map(function (s) {
-      return s.wikitext(options);
+    text += this.sentences().map(s => {
+      return s.makeWikitext(options);
     }).join('\n');
     return text;
   };
 
-  var _03Paragraph = toWiki$2;
+  var _03Paragraph = toWiki$8;
 
-  //escape a string like 'fun*2.Co' for a regExpr
   function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   } //sometimes text-replacements can be ambiguous - words used multiple times..
 
 
-  var smartReplace = function smartReplace(all, text, result) {
+  const smartReplace$1 = function (all, text, result) {
     if (!text || !all) {
       return all;
     }
@@ -147,7 +139,7 @@
 
     text = escapeRegExp(text); //try a word-boundary replace
 
-    var reg = new RegExp('\\b' + text + '\\b');
+    let reg = new RegExp('\\b' + text + '\\b');
 
     if (reg.test(all) === true) {
       all = all.replace(reg, result);
@@ -160,45 +152,45 @@
     return all;
   };
 
-  var smartReplace_1 = smartReplace;
+  var smartReplace_1 = smartReplace$1;
 
-  var defaults$3 = {
+  const smartReplace = smartReplace_1;
+  const defaults = {
     links: true
   };
 
-  var toWiki$3 = function toWiki(options) {
+  const toWiki$7 = function (options) {
     options = options || {};
-    options = Object.assign({}, defaults$3, options);
-    var text = this.text();
+    options = Object.assign({}, defaults, options);
+    let text = this.text();
 
     if (options.links === true) {
-      this.links().forEach(function (link) {
-        var str = link.text() || link.page();
-        var tag = link.wikitext();
-        text = smartReplace_1(text, str, tag);
+      this.links().forEach(link => {
+        let str = link.text() || link.page();
+        let tag = link.makeWikitext();
+        text = smartReplace(text, str, tag);
       });
     }
 
     if (options.formatting === true) {
       //support bolds
-      this.bold().forEach(function (str) {
-        var tag = '**' + str + '**';
-        text = smartReplace_1(text, str, tag);
+      this.bold().forEach(str => {
+        let tag = '**' + str + '**';
+        text = smartReplace(text, str, tag);
       }); //do italics
 
-      this.italic().forEach(function (str) {
-        var tag = '***' + str + '***';
-        text = smartReplace_1(text, str, tag);
+      this.italic().forEach(str => {
+        let tag = '***' + str + '***';
+        text = smartReplace(text, str, tag);
       });
     }
 
     return text;
   };
 
-  var _04Sentence = toWiki$3;
+  var _04Sentence = toWiki$7;
 
-  // add `[text](href)` to the text
-  var toWiki$4 = function toWiki() {
+  const toWiki$6 = function () {
     //if it's an external link, we good
     if (this.site()) {
       if (this.text()) {
@@ -208,13 +200,13 @@
       return "[".concat(this.site(), "]");
     }
 
-    var page = this.page() || '';
+    let page = this.page() || '';
 
     if (this.anchor()) {
       page += "#".concat(this.anchor());
     }
 
-    var str = this.text() || '';
+    let str = this.text() || '';
 
     if (str && str.toLowerCase() !== page.toLowerCase()) {
       return "[[".concat(page, "|").concat(str, "]]");
@@ -223,11 +215,11 @@
     return "[[".concat(page, "]]");
   };
 
-  var _05Link = toWiki$4;
+  var _05Link = toWiki$6;
 
-  var toWiki$5 = function toWiki() {
-    var text = "[[".concat(this.file(), "|thumb");
-    var caption = this.data.caption;
+  const toWiki$5 = function () {
+    let text = "[[".concat(this.file(), "|thumb");
+    let caption = this.data.caption;
 
     if (caption) {
       text += "|".concat(this.data.caption.wikitext());
@@ -236,14 +228,31 @@
     return text + ']]';
   };
 
-  var image = toWiki$5;
+  var image$1 = toWiki$5;
 
-  var toWiki$6 = function toWiki() {
-    var _this = this;
+  const toWiki$4 = function () {
+    let text = "{{".concat(this.data.template || '');
+    Object.keys(this.data).forEach(k => {
+      if (k === 'template') {
+        return;
+      }
 
-    var text = "{{Infobox ".concat(this._type || '', "\n");
-    Object.keys(this.data).forEach(function (k) {
-      var val = _this.data[k];
+      let val = this.data[k];
+
+      if (val) {
+        text += "| ".concat(k, " = ").concat(val || '');
+      }
+    });
+    text += '}}\n';
+    return text;
+  };
+
+  var template$1 = toWiki$4;
+
+  const toWiki$3 = function () {
+    let text = "{{Infobox ".concat(this._type || '', "\n");
+    Object.keys(this.data).forEach(k => {
+      let val = this.data[k];
 
       if (val) {
         text += "| ".concat(k, " = ").concat(val.wikitext() || '', "\n");
@@ -253,58 +262,54 @@
     return text;
   };
 
-  var infobox = toWiki$6;
+  var infobox$1 = toWiki$3;
 
-  var toWiki$7 = function toWiki() {
-    var txt = '';
-    this.lines().forEach(function (s) {
+  const toWiki$2 = function () {
+    let txt = '';
+    this.lines().forEach(s => {
       txt += "* ".concat(s.wikitext(), "\n");
     });
     return txt;
   };
 
-  var list = toWiki$7;
+  var list$1 = toWiki$2;
 
-  var toWiki$8 = function toWiki() {
-    var _this = this;
-
+  const toWiki$1 = function () {
     if (this.data.inline) {
       return "<ref>".concat(this.data.inline.wikitext(), "</ref>");
     }
 
-    var type = this.data.type || 'cite web';
-    var data = '';
-    Object.keys(this.data).forEach(function (k) {
+    let type = this.data.type || 'cite web';
+    let data = '';
+    Object.keys(this.data).forEach(k => {
       if (k !== 'template' && k !== 'type') {
-        data += " | ".concat(k, " = ").concat(_this.data[k]);
+        data += " | ".concat(k, " = ").concat(this.data[k]);
       }
     });
     return "<ref>{{".concat(type).concat(data, "}}</ref>");
   };
 
-  var reference = toWiki$8;
+  var reference$1 = toWiki$1;
 
-  var toWiki$9 = function toWiki(options) {
-    var rows = this.data;
-    var wiki = "{| class=\"wikitable\"\n"; // draw headers
+  const toWiki = function (options) {
+    let rows = this.data;
+    let wiki = "{| class=\"wikitable\"\n"; // draw headers
 
-    var headers = Object.keys(rows[0]);
-    headers = headers.filter(function (k) {
-      return /^col[0-9]/.test(k) !== true;
-    });
+    let headers = Object.keys(rows[0]);
+    headers = headers.filter(k => /^col[0-9]/.test(k) !== true);
 
     if (headers.length > 0) {
       wiki += '|-\n';
-      headers.forEach(function (k) {
+      headers.forEach(k => {
         wiki += '! ' + k + '\n';
       });
     } //make rows
 
 
-    rows.forEach(function (o) {
+    rows.forEach(o => {
       wiki += '|-\n';
-      Object.keys(o).forEach(function (k) {
-        var val = o[k].wikitext(options);
+      Object.keys(o).forEach(k => {
+        let val = o[k].wikitext(options);
         wiki += '| ' + val + '\n';
       });
     });
@@ -312,24 +317,37 @@
     return wiki;
   };
 
-  var table = toWiki$9;
+  var table$1 = toWiki;
 
-  var plugin = function plugin(models) {
-    models.Doc.prototype.wikitext = _01Doc;
-    models.Section.prototype.wikitext = _02Section;
-    models.Paragraph.prototype.wikitext = _03Paragraph;
-    models.Sentence.prototype.wikitext = _04Sentence;
-    models.Link.prototype.wikitext = _05Link;
-    models.Image.prototype.wikitext = image;
-    models.Infobox.prototype.wikitext = infobox;
-    models.Table.prototype.wikitext = table;
-    models.List.prototype.wikitext = list;
-    models.Reference.prototype.wikitext = reference;
+  const doc = _01Doc;
+  const section = _02Section;
+  const paragraph = _03Paragraph;
+  const sentence = _04Sentence;
+  const link = _05Link;
+  const image = image$1;
+  const template = template$1;
+  const infobox = infobox$1;
+  const list = list$1;
+  const reference = reference$1;
+  const table = table$1;
+
+  const plugin = function (models) {
+    models.Doc.prototype.makeWikitext = doc;
+    models.Section.prototype.makeWikitext = section;
+    models.Paragraph.prototype.makeWikitext = paragraph;
+    models.Sentence.prototype.makeWikitext = sentence;
+    models.Link.prototype.makeWikitext = link;
+    models.Image.prototype.makeWikitext = image;
+    models.Infobox.prototype.makeWikitext = infobox;
+    models.Template.prototype.makeWikitext = template;
+    models.Table.prototype.makeWikitext = table;
+    models.List.prototype.makeWikitext = list;
+    models.Reference.prototype.makeWikitext = reference;
   };
 
   var src = plugin;
 
   return src;
 
-})));
+}));
 //# sourceMappingURL=wtf-plugin-wikitext.js.map

@@ -1,17 +1,22 @@
 {
   "name": "wtf-plugin-classify",
   "description": "basic classifier for wikipedia articles",
-  "version": "0.2.0",
+  "version": "1.0.1",
   "main": "./builds/wtf-plugin-classify.js",
   "unpkg": "./builds/wtf-plugin-classify.min.js",
   "module": "./builds/wtf-plugin-classify.mjs",
   "author": "Spencer Kelly (spencermountain)",
   "homepage": "https://github.com/spencermountain/wtf_wikipedia/plugins/classify#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/spencermountain/wtf_wikipedia.git"
+  },
   "scripts": {
     "watch": "amble ./scratch.js",
     "test": "tape ./tests/**/*.test.js | tap-dancer",
     "testb": "TESTENV=prod tape ./tests/**/*.test.js | tap-dancer",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "schema": "node ./schema/_print.js"
   },
   "files": [
     "builds"
@@ -23,22 +28,19 @@
     "singleQuote": true,
     "printWidth": 100
   },
-  "dependencies": {},
   "peerDependencies": {
     "wtf_wikipedia": "^8.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.9.0",
-    "@babel/preset-env": "7.9.0",
-    "rollup": "2.2.0",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.0.0",
+    "@babel/core": "7.16.0",
+    "@babel/preset-env": "7.16.4",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "rollup": "2.59.0",
     "rollup-plugin-filesize-check": "0.0.1",
-    "rollup-plugin-json": "4.0.0",
-    "rollup-plugin-node-resolve": "5.2.0",
-    "rollup-plugin-terser": "^5.0.0",
-    "tap-dancer": "^0.2.0",
-    "tape": "^4.11.0"
+    "rollup-plugin-terser": "7.0.2",
+    "tap-dancer": "0.3.4",
+    "tape": "5.3.2"
   },
-  "licence": "MIT"
+  "license": "MIT"
 }

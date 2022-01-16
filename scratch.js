@@ -1,20 +1,26 @@
-var wtf = require('./src/index')
-wtf.extend(require('./plugins/wikitext/src'))
-// wtf.extend(require('./plugins/i18n/src'))
+const wtf = require('./src/index')
+// wtf.extend(require('./plugins/wikitext/src'))
+wtf.extend(require('./plugins/html'))
 
-// var str = `[[Image:Levellers declaration and standard.gif|thumb|Woodcut from a [[Diggers]] document by [[William Everard (Digger)|William Everard]]]]`
-// console.log(wtf(str).json())
+// one
+// let str = `[[one]] and [[two]] {{one}} and {{two}}`
+// let doc = wtf(str)
+// console.log(doc.templates(1)[0].json())
 
-// wtf.fetch('Quartz', 'en').then((doc) => {
-//   // console.log(doc.lang())
-//   console.log(doc.images().map((j) => j.url()))
+// let str = `{{Infobox country
+// | common_name = United Kingdom
+// }}
+// `
+// let obj = wtf(str).infobox(0).json()
+// console.log(obj)
+
+// wtf.fetch('https://tvtropes.org/pmwiki/pmwiki.php/Main/Japandering').then((doc) => {
+//   console.log(doc)
 // })
+// const wtf = require('wtf_wikipedia')
+// wtf.extend(require('wtf-plugin-html'))
 
-let str = `
-<ref name="Bond">{{cite magazine |last=Bond |first=Brian |date=October 1963 |title=Amritsar 1919 |magazine=History Today |volume=13 |uitgawe=10 |bls.=666–676}}</ref>
-`
-let doc = wtf(str)
-let json = doc.json({ encode: true }).sections[0].references
-console.log(json)
-// console.log(doc.infobox().image().url())
-// console.log(doc.images().map((img) => img.url()))
+const input = "'''some bold text''' yeah"
+let doc = wtf(input, { pageID: 'foo' })
+// doc._wiki = 'foo'
+console.log(doc.pageID())

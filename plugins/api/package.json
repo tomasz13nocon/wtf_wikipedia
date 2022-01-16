@@ -1,0 +1,49 @@
+{
+  "name": "wtf-plugin-api",
+  "description": "wikimedia api plugin for wtf_wikipedia",
+  "version": "0.1.1",
+  "main": "./builds/wtf-plugin-api.js",
+  "unpkg": "./builds/wtf-plugin-api.min.js",
+  "module": "./builds/wtf-plugin-api.mjs",
+  "author": "Spencer Kelly (spencermountain)",
+  "homepage": "https://github.com/spencermountain/wtf_wikipedia/plugins/api#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/spencermountain/wtf_wikipedia.git"
+  },
+  "scripts": {
+    "watch": "amble ./scratch.js",
+    "test": "tape ./tests/**/*.test.js | tap-dancer",
+    "testb": "TESTENV=prod tape ./tests/**/*.test.js | tap-dancer",
+    "build": "rollup -c"
+  },
+  "files": [
+    "builds"
+  ],
+  "prettier": {
+    "trailingComma": "none",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "dependencies": {
+    "slow": "^1.1.0"
+  },
+  "peerDependencies": {
+    "wtf_wikipedia": "^8.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.16.0",
+    "@babel/preset-env": "7.16.4",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "rollup": "2.59.0",
+    "rollup-plugin-filesize-check": "0.0.1",
+    "rollup-plugin-terser": "7.0.2",
+    "tap-dancer": "0.3.4",
+    "tape": "5.3.2"
+  },
+  "license": "MIT"
+}
