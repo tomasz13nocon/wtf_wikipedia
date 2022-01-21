@@ -22,7 +22,7 @@ const models = {
   Template: require('./template/Template'),
   http: require('./_lib/fetch'),
   wtf: wtf,
-  parse: require('./template/_parsers/parse'),
+  parse: require('./template/parse/toJSON'),
 }
 let templates = require('./template/custom')
 let infoboxes = require('./infobox/_infoboxes')
