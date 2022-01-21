@@ -2080,13 +2080,14 @@ const external_link = /\[(https?|news|ftp|mailto|gopher|irc)(:\/\/[^\]| ]{4,1500
 const link_reg = /\[\[(.{0,160}?)\]\]([a-z]+)?/gi; //allow dangling suffixes - "[[flanders]]s"
 
 const external_links = function (links, str) {
-  str.replace(external_link, function (raw, protocol, link, text) {
+  str.replace(external_link, function (raw, protocol, link, text, offset) {
     text = text || '';
     links.push({
       type: 'external',
       site: protocol + link,
       text: text.trim(),
-      raw: raw
+      raw: raw,
+      offset: offset
     });
     return text;
   });
@@ -2095,7 +2096,7 @@ const external_links = function (links, str) {
 
 const internal_links = function (links, str) {
   //regular links
-  str.replace(link_reg, function (raw, s, suffix) {
+  str.replace(link_reg, function (raw, s, suffix, offset) {
     let txt = null; //make a copy of original
 
     let link = s;
@@ -2127,7 +2128,8 @@ const internal_links = function (links, str) {
 
     let obj = {
       page: link,
-      raw: raw
+      raw: raw,
+      offset: offset
     };
     obj.page = obj.page.replace(/#(.*)/, (a, b) => {
       obj.anchor = b;
@@ -2568,6 +2570,9 @@ const methods$7 = {
     }
 
     return url;
+  },
+  offset: function () {
+    return this.data.offset;
   }
 };
 Object.keys(methods$7).forEach(k => {
@@ -2589,6 +2594,25 @@ const removeLinks = function (line) {
 const getLinks = function (data) {
   let wiki = data.text;
   let links = parseLinks$1(wiki) || [];
+  data.ast = [];
+  let last = 0;
+
+  for (let link of links) {
+    if (last !== link.offset) data.ast.push({
+      type: 'text',
+      text: wiki.slice(last, link.offset)
+    });
+    last = link.offset + link.raw.length;
+    delete link.offset;
+    data.ast.push({ ...link,
+      type: "".concat(link.type || 'internal', " link")
+    });
+  }
+
+  if (last !== wiki.length) data.ast.push({
+    type: 'text',
+    text: wiki.slice(last, wiki.length)
+  });
   data.links = links.map(link => {
     wiki = wiki.replace(link.raw, link.text || link.page || ''); // delete link.raw
 
@@ -2598,7 +2622,7 @@ const getLinks = function (data) {
   data.text = wiki;
 };
 
-var link = getLinks;
+var link_1 = getLinks;
 
 const formatting = function (obj) {
   let bolds = [];
@@ -2734,6 +2758,9 @@ const methods$6 = {
   },
   json: function (options) {
     return toJSON$5(this, options);
+  },
+  ast: function () {
+    return this.data.ast || [];
   },
   wikitext: function () {
     return this.data.wiki || '';
@@ -2899,7 +2926,7 @@ const sentence_parser = function (text) {
 var parse$k = sentence_parser;
 
 const helpers = helpers$1;
-const parseLinks = link;
+const parseLinks = link_1;
 const parseFmt = formatting_1;
 const Sentence$1 = Sentence_1;
 const sentenceParser = parse$k;
@@ -4542,7 +4569,25 @@ var _infoboxes = {
   'pro hockey team': true,
   'hockey team player': true,
   'hockey team start': true,
-  mlbbioret: true
+  mlbbioret: true,
+  book: true,
+  'comic book': true,
+  'comic story': true,
+  'comic story arc': true,
+  'comic series': true,
+  'comic strip': true,
+  'trade paperback': true,
+  webstrip: true,
+  'short story': true,
+  'reference book': true,
+  media: true,
+  'video game': true,
+  movie: true,
+  'television series': true,
+  'television season': true,
+  'television episode': true,
+  audiobook: true,
+  'book series': true
 };
 
 const i18n$2 = i18n$6;
@@ -9692,7 +9737,8 @@ const models = {
   Table: Table_1,
   Template: Template_1,
   http: fetch$1,
-  wtf: wtf
+  wtf: wtf,
+  parse: toJSON$4
 };
 let templates = custom;
 let infoboxes = _infoboxes;
