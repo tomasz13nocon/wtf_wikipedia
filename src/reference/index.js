@@ -31,7 +31,7 @@ const parseRefs = function (section) {
   let references = []
   let wiki = section._wiki
 
-  wiki = wiki.replace(/ ?<ref>([\s\S]{0,1800}?)<\/ref> ?/gi, function (all, tmpl) {
+  wiki = wiki.replace(/ ?<ref>([\s\S]*?)<\/ref> ?/gi, function (all, tmpl) {
     if (hasCitation(tmpl)) {
       let obj = parseCitation(tmpl)
       if (obj) {
@@ -45,10 +45,10 @@ const parseRefs = function (section) {
   })
 
   //<ref name=""/>
-  wiki = wiki.replace(/ ?<ref [^>]{0,200}?\/> ?/gi, ' ')
+  wiki = wiki.replace(/ ?<ref [^>]*?\/> ?/gi, ' ')
 
   //<ref name=""></ref>
-  wiki = wiki.replace(/ ?<ref [^>]{0,200}>([\s\S]{0,1800}?)<\/ref> ?/gi, function (all, tmpl) {
+  wiki = wiki.replace(/ ?<ref [^>]*>([\s\S]*?)<\/ref> ?/gi, function (all, tmpl) {
     if (hasCitation(tmpl)) {
       let obj = parseCitation(tmpl)
       if (obj) {

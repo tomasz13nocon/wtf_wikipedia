@@ -30,6 +30,7 @@ const methods = {
       obj.page = this.page()
     } else if (obj.type === 'interwiki') {
       obj.wiki = this.wiki()
+      obj.lang = this.lang()
     } else {
       obj.site = this.site()
     }
@@ -60,6 +61,18 @@ const methods = {
       this.data.wiki = str
     }
     return this.data.wiki
+  },
+  lang: function (str) {
+    if (str !== undefined) {
+      this.data.lang = str
+    }
+    return this.data.lang
+  },
+  href: function (str) {
+    if (str !== undefined) {
+      this.data.href = str
+    }
+    return this.data.href
   },
   type: function (str) {
     if (str !== undefined) {

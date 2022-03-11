@@ -27,7 +27,8 @@ test('expand external interwiki link', (t) => {
   obj = doc.link().json()
   t.equal(obj.type, 'interwiki', 'interwiki')
   t.equal(obj.text, 'bonjour', 'text')
-  t.deepEqual(obj.wiki, { wiki: 'wiktionary', lang: 'fr' }, 'wiki')
+  t.equal(obj.wiki, 'wiktionary', 'wiki')
+  t.equal(obj.lang, 'fr', 'lang')
 
   str = `[[ThisIsNotAWiki:text]]`
   doc = wtf(str)

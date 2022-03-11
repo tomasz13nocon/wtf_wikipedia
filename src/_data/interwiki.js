@@ -1,4 +1,4 @@
-const wp = '.wikipedia.org/wiki/$1'
+const wp = 'wikipedia.org/wiki/$1'
 const wm = '.wikimedia.org/wiki/$1'
 const w = 'www.'
 

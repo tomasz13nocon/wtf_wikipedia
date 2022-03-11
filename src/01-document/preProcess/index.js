@@ -10,7 +10,7 @@ const kill_xml = require('./kill_xml')
  */
 function preProcess(wiki) {
   //remove comments
-  wiki = wiki.replace(/<!--[\s\S]{0,2000}?-->/g, '')
+  wiki = wiki.replace(/<!--[\s\S]*?-->/g, '')
   wiki = wiki.replace(/__(NOTOC|NOEDITSECTION|FORCETOC|TOC)__/gi, '')
   //signitures
   wiki = wiki.replace(/~{2,3}/g, '')

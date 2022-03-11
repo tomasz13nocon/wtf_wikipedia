@@ -25,7 +25,8 @@ const parseInterwiki = function (obj) {
       if (interwikis.hasOwnProperty(wiki) === false || languages.hasOwnProperty(lang) === false) {
         return obj
       }
-      obj.wiki = { wiki: wiki, lang: lang }
+      obj.wiki = wiki
+      obj.lang = lang
     } else {
       if (interwikis.hasOwnProperty(site) === false) {
         return obj
@@ -33,6 +34,7 @@ const parseInterwiki = function (obj) {
       obj.wiki = site
     }
     obj.page = m[2]
+    obj.href = interwikis[obj.wiki].replace("$1", obj.page)
   }
   return obj
 }
