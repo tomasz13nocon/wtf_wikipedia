@@ -1560,7 +1560,7 @@ var languages$4 = {
 
 };
 
-const wp = '.wikipedia.org/wiki/$1';
+const wp = 'wikipedia.org/wiki/$1';
 const wm = '.wikimedia.org/wiki/$1';
 const w = 'www.';
 var interwiki$1 = {
@@ -2050,14 +2050,12 @@ const parseInterwiki = function (obj) {
     if (site.indexOf(':') !== -1) {
       let [, wiki, lang] = site.match(/^:?(.*):(.*)/); //only allow interwikis to these specific places
 
-      if (interwikis.hasOwnProperty(wiki) && languages$3.hasOwnProperty(lang) === false) {
+      if (interwikis.hasOwnProperty(wiki) === false || languages$3.hasOwnProperty(lang) === false) {
         return obj;
       }
 
-      obj.wiki = {
-        wiki: wiki,
-        lang: lang
-      };
+      obj.wiki = wiki;
+      obj.lang = lang;
     } else {
       if (interwikis.hasOwnProperty(site) === false) {
         return obj;
@@ -2067,6 +2065,7 @@ const parseInterwiki = function (obj) {
     }
 
     obj.page = m[2];
+    obj.href = interwikis[obj.wiki].replace("$1", obj.page);
   }
 
   return obj;
@@ -2267,7 +2266,7 @@ const kill_xml = kill_xml_1;
 
 function preProcess$1(wiki) {
   //remove comments
-  wiki = wiki.replace(/<!--[\s\S]{0,2000}?-->/g, '');
+  wiki = wiki.replace(/<!--[\s\S]*?-->/g, '');
   wiki = wiki.replace(/__(NOTOC|NOEDITSECTION|FORCETOC|TOC)__/gi, ''); //signitures
 
   wiki = wiki.replace(/~{2,3}/g, ''); //windows newlines
@@ -2486,6 +2485,7 @@ const methods$7 = {
       obj.page = this.page();
     } else if (obj.type === 'interwiki') {
       obj.wiki = this.wiki();
+      obj.lang = this.lang();
     } else {
       obj.site = this.site();
     }
@@ -2522,6 +2522,20 @@ const methods$7 = {
     }
 
     return this.data.wiki;
+  },
+  lang: function (str) {
+    if (str !== undefined) {
+      this.data.lang = str;
+    }
+
+    return this.data.lang;
+  },
+  href: function (str) {
+    if (str !== undefined) {
+      this.data.href = str;
+    }
+
+    return this.data.href;
   },
   type: function (str) {
     if (str !== undefined) {
@@ -3337,7 +3351,7 @@ const parseInline = function (str) {
 const parseRefs = function (section) {
   let references = [];
   let wiki = section._wiki;
-  wiki = wiki.replace(/ ?<ref>([\s\S]{0,1800}?)<\/ref> ?/gi, function (all, tmpl) {
+  wiki = wiki.replace(/ ?<ref>([\s\S]*?)<\/ref> ?/gi, function (all, tmpl) {
     if (hasCitation(tmpl)) {
       let obj = parseCitation(tmpl);
 
@@ -3359,9 +3373,9 @@ const parseRefs = function (section) {
     return ' ';
   }); //<ref name=""/>
 
-  wiki = wiki.replace(/ ?<ref [^>]{0,200}?\/> ?/gi, ' '); //<ref name=""></ref>
+  wiki = wiki.replace(/ ?<ref [^>]*?\/> ?/gi, ' '); //<ref name=""></ref>
 
-  wiki = wiki.replace(/ ?<ref [^>]{0,200}>([\s\S]{0,1800}?)<\/ref> ?/gi, function (all, tmpl) {
+  wiki = wiki.replace(/ ?<ref [^>]*>([\s\S]*?)<\/ref> ?/gi, function (all, tmpl) {
     if (hasCitation(tmpl)) {
       let obj = parseCitation(tmpl);
 
@@ -3485,16 +3499,22 @@ const findRows$1 = function (lines) {
         row = [];
       }
     } else {
-      //look for '||' inline row-splitter
-      line = line.split(/(?:\|\||!!)/); //eslint-disable-line
-      //support newline -> '||'
+      // remove leading | or ! for the ||/!! splitting
+      let startChar = line.charAt(0);
 
-      if (!line[0] && line[1]) {
-        line.shift();
+      if (startChar === '|' || startChar === '!') {
+        line = line.substring(1);
+      } //look for '||' inline row-splitter
+
+
+      line = line.split(/(?:\|\||!!)/); //eslint-disable-line
+      // add leading ! back, because we later read it in header parsing functions
+
+      if (startChar === '!') {
+        line[0] = startChar + line[0];
       }
 
       line.forEach(l => {
-        l = l.replace(/^\| */, '');
         l = l.trim();
         row.push(l);
       });
@@ -3595,7 +3615,7 @@ const cleanText = function (str) {
   str = parseSentence$4(str).text(); //anything before a single-pipe is styling, so remove it
 
   if (str.match(/\|/)) {
-    str = str.replace(/.+\| ?/, ''); //class="unsortable"|title
+    str = str.replace(/.*?\| ?/, ''); //class="unsortable"|title
   }
 
   str = str.replace(/style=['"].*?["']/, ''); //'!' is used as a highlighed-column
@@ -4587,7 +4607,8 @@ var _infoboxes = {
   'television season': true,
   'television episode': true,
   audiobook: true,
-  'book series': true
+  'book series': true,
+  magazine: true
 };
 
 const i18n$2 = i18n$6;

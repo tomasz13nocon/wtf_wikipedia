@@ -53,4 +53,5 @@ module.exports = {
   'television episode': true,
   audiobook: true,
   'book series': true,
+  magazine: true,
 }
