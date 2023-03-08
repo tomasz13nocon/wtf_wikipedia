@@ -1,4 +1,4 @@
-/* wtf_wikipedia 9.0.3 MIT */
+/* wtf_wikipedia 9.0.4-1 MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -4673,6 +4673,7 @@
 	  'comic story arc': true,
 	  'comic series': true,
 	  'comic strip': true,
+	  'comic collection': true,
 	  'trade paperback': true,
 	  webstrip: true,
 	  'short story': true,
@@ -9793,7 +9794,7 @@
 
 	var _fetch = fetch$2;
 
-	var _version = '9.0.3';
+	var _version = '9.0.4-1';
 
 	const unfetch = browser;
 	/**

@@ -1,4 +1,4 @@
-/* wtf_wikipedia 9.0.3 MIT */
+/* wtf_wikipedia 9.0.4-1 MIT */
 import require$$0 from 'isomorphic-unfetch';
 
 /**
@@ -4596,6 +4596,7 @@ var _infoboxes = {
   'comic story arc': true,
   'comic series': true,
   'comic strip': true,
+  'comic collection': true,
   'trade paperback': true,
   webstrip: true,
   'short story': true,
@@ -9716,7 +9717,7 @@ const fetch$2 = function (title, options, callback) {
 
 var _fetch = fetch$2;
 
-var _version = '9.0.3';
+var _version = '9.0.4-1';
 
 const unfetch = require$$0;
 /**
