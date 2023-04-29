@@ -42,6 +42,7 @@ module.exports = {
   'comic series': true,
   'comic strip': true,
   'comic collection': true,
+  'graphic novel': true,
   'trade paperback': true,
   webstrip: true,
   'short story': true,
