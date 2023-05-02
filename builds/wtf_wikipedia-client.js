@@ -1,4 +1,4 @@
-/* wtf_wikipedia 9.0.4-1 MIT */
+/* wtf_wikipedia 9.0.4-3 MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -4737,7 +4737,8 @@
 	  'television episode': true,
 	  audiobook: true,
 	  'book series': true,
-	  magazine: true
+	  magazine: true,
+	  'activity book': true
 	};
 
 	const i18n$2 = i18n$6;
@@ -9446,7 +9447,7 @@
 	};
 	var _fetch = fetch$2;
 
-	var _version = '9.0.4-1';
+	var _version = '9.0.4-3';
 
 	const unfetch = browser;
 

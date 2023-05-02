@@ -56,4 +56,5 @@ module.exports = {
   audiobook: true,
   'book series': true,
   magazine: true,
+  'activity book': true,
 }
