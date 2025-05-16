@@ -1,4 +1,4 @@
-/* wtf_wikipedia 9.0.4-6 MIT */
+/* wtf_wikipedia 9.0.4-7 MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -180,10 +180,7 @@
 	 * @returns {string} QueryString
 	 */
 	const toQueryString = function (obj) {
-	  return Object.entries(obj).map(_ref => {
-	    let [key, value] = _ref;
-	    return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-	  }).join('&');
+	  return Object.entries(obj).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
 	};
 
 	/**
@@ -257,8 +254,7 @@
 	 * @param {object} [options]
 	 * @returns {*} result
 	 */
-	const getResult$1 = function (data) {
-	  let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	const getResult$1 = function (data, options = {}) {
 	  //get all the pagesIds from the result
 	  let pages = Object.keys(data.query.pages);
 
@@ -2653,8 +2649,7 @@
 	  str = str.replace(/\./g, '\\u002e');
 	  return str;
 	};
-	const encodeObj = function () {
-	  let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	const encodeObj = function (obj = {}) {
 	  let keys = Object.keys(obj);
 	  for (let i = 0; i < keys.length; i += 1) {
 	    if (specialChar.test(keys[i]) === true) {
@@ -3009,8 +3004,7 @@
 	const toJSON$5 = toJson$5;
 
 	//where we store the formatting, link, date information
-	const Sentence$2 = function () {
-	  let data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	const Sentence$2 = function (data = {}) {
 	  Object.defineProperty(this, 'data', {
 	    enumerable: false,
 	    value: data
@@ -3374,8 +3368,7 @@
 	 */
 	const keyMaker$1 = function (arr, order) {
 	  let keyIndex = 0;
-	  return arr.reduce(function (h) {
-	    let str = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+	  return arr.reduce((h, str = '') => {
 	    str = str.trim();
 
 	    //support named keys - 'foo=bar'
@@ -3469,9 +3462,7 @@
 	 * @param {'json' | 'raw'} [fmt] whether you wan to parse the text of the template the raw object or just the text
 	 * @returns {object} the parameters of the template in a usable format
 	 */
-	const parser = function (tmpl) {
-	  let order = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-	  let fmt = arguments.length > 2 ? arguments[2] : undefined;
+	const parser = function (tmpl, order = [], fmt) {
 	  //remove {{}}'s and split based on pipes
 	  tmpl = strip$2(tmpl || '');
 	  let arr = pipeSplitter(tmpl);
@@ -3550,8 +3541,7 @@
 	  wikitext: function () {
 	    return this.wiki || '';
 	  },
-	  json: function () {
-	    let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  json: function (options = {}) {
 	    let json = this.data || {};
 	    //encode them, for mongodb
 	    if (options.encode === true) {
@@ -3874,8 +3864,7 @@
 	};
 
 	//'!' starts a header-row
-	const findHeaders = function () {
-	  let rows = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	const findHeaders = function (rows = []) {
 	  let headers = [];
 
 	  // is the first-row just a ton of colspan?
@@ -3995,16 +3984,14 @@
 	const setDefaults$5 = setDefaults_1;
 	const toJson$3 = toJson_1$2;
 	const defaults$6 = {};
-	const normalize$1 = function () {
-	  let key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	const normalize$1 = function (key = '') {
 	  key = key.toLowerCase();
 	  key = key.replace(/[_-]/g, ' ');
 	  key = key.replace(/\(.*?\)/, '');
 	  key = key.trim();
 	  return key;
 	};
-	const Table$1 = function (data) {
-	  let wiki = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+	const Table$1 = function (data, wiki = '') {
 	  Object.defineProperty(this, 'data', {
 	    enumerable: false,
 	    value: data
@@ -4391,8 +4378,7 @@
 	    return ' * ' + str;
 	  }).join('\n');
 	};
-	const List$1 = function (data) {
-	  let wiki = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+	const List$1 = function (data, wiki = '') {
 	  Object.defineProperty(this, 'data', {
 	    enumerable: false,
 	    value: data
@@ -4719,11 +4705,17 @@
 	  'comic story': true,
 	  comicstory: true,
 	  'comic story arc': true,
+	  comicstoryarc: true,
 	  'comic series': true,
+	  comicseries: true,
 	  'comic strip': true,
+	  comicstrip: true,
 	  'comic collection': true,
+	  comiccollection: true,
 	  'graphic novel': true,
+	  graphicnovel: true,
 	  'trade paperback': true,
+	  tradepaperback: true,
 	  webstrip: true,
 	  'short story': true,
 	  shortstory: true,
@@ -4734,13 +4726,19 @@
 	  videogame: true,
 	  movie: true,
 	  'television series': true,
+	  televisionseries: true,
 	  'television season': true,
+	  televisionseason: true,
 	  'television episode': true,
+	  televisionepisode: true,
 	  audiobook: true,
 	  'book series': true,
+	  bookseries: true,
 	  magazine: true,
 	  'magazine series': true,
-	  'activity book': true
+	  magazineseries: true,
+	  'activity book': true,
+	  activitybook: true
 	};
 
 	const i18n$2 = i18n$6;
@@ -4773,8 +4771,7 @@
 	};
 
 	//turns template data into good infobox data
-	const fmtInfobox = function () {
-	  let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	const fmtInfobox = function (obj = {}) {
 	  let m = obj.template.match(i18nReg);
 	  let type = obj.template;
 	  if (m && m[0]) {
@@ -4958,8 +4955,7 @@
 	  perc = perc.toFixed(dec);
 	  return Number(perc);
 	};
-	const toNumber = function () {
-	  let str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	const toNumber = function (str = '') {
 	  if (typeof str === 'number') {
 	    return str;
 	  }
@@ -7606,8 +7602,7 @@
 	  isArray: isArray$1
 	} = helpers$1;
 	const Sentence = Sentence_1;
-	const normalize = function () {
-	  let str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	const normalize = (str = '') => {
 	  str = str.toLowerCase();
 	  str = str.replace(/[-_]/g, ' ');
 	  return str.trim();
@@ -7722,9 +7717,7 @@
 	    return this.wiki || '';
 	  }
 	};
-	const Template$2 = function (data) {
-	  let text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-	  let wiki = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+	const Template$2 = function (data, text = '', wiki = '') {
 	  Object.defineProperty(this, 'data', {
 	    enumerable: false,
 	    value: data
@@ -9432,7 +9425,7 @@
 	};
 	var _fetch = fetch$2;
 
-	var _version = '9.0.4-6';
+	var _version = '9.0.4-7';
 
 	const unfetch = browser;
 
