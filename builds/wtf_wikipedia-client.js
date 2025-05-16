@@ -1,4 +1,4 @@
-/* wtf_wikipedia 9.0.4-5 MIT */
+/* wtf_wikipedia 9.0.4-6 MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -4715,6 +4715,7 @@
 	  mlbbioret: true,
 	  book: true,
 	  'comic book': true,
+	  comicbook: true,
 	  'comic story': true,
 	  comicstory: true,
 	  'comic story arc': true,
@@ -4725,9 +4726,12 @@
 	  'trade paperback': true,
 	  webstrip: true,
 	  'short story': true,
+	  shortstory: true,
 	  'reference book': true,
+	  referencebook: true,
 	  media: true,
 	  'video game': true,
+	  videogame: true,
 	  movie: true,
 	  'television series': true,
 	  'television season': true,
@@ -9428,7 +9432,7 @@
 	};
 	var _fetch = fetch$2;
 
-	var _version = '9.0.4-5';
+	var _version = '9.0.4-6';
 
 	const unfetch = browser;
 

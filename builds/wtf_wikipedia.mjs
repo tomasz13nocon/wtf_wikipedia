@@ -1,4 +1,4 @@
-/* wtf_wikipedia 9.0.4-5 MIT */
+/* wtf_wikipedia 9.0.4-6 MIT */
 import require$$0 from 'isomorphic-unfetch';
 
 /**
@@ -4640,6 +4640,7 @@ var _infoboxes = {
   mlbbioret: true,
   book: true,
   'comic book': true,
+  comicbook: true,
   'comic story': true,
   comicstory: true,
   'comic story arc': true,
@@ -4650,9 +4651,12 @@ var _infoboxes = {
   'trade paperback': true,
   webstrip: true,
   'short story': true,
+  shortstory: true,
   'reference book': true,
+  referencebook: true,
   media: true,
   'video game': true,
+  videogame: true,
   movie: true,
   'television series': true,
   'television season': true,
@@ -9353,7 +9357,7 @@ const fetch$2 = function (title, options, callback) {
 };
 var _fetch = fetch$2;
 
-var _version = '9.0.4-5';
+var _version = '9.0.4-6';
 
 const unfetch = require$$0;
 
