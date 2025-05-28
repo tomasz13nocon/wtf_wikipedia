@@ -42,6 +42,7 @@ module.exports = {
   comicstory: true,
   'comic story arc': true,
   comicstoryarc: true,
+  comicarc: true,
   'comic series': true,
   comicseries: true,
   'comic strip': true,

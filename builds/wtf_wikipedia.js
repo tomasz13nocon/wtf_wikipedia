@@ -1,4 +1,4 @@
-/* wtf_wikipedia 9.0.4-7 MIT */
+/* wtf_wikipedia 9.0.4-8 MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('isomorphic-unfetch')) :
   typeof define === 'function' && define.amd ? define(['isomorphic-unfetch'], factory) :
@@ -4639,6 +4639,7 @@
     comicstory: true,
     'comic story arc': true,
     comicstoryarc: true,
+    comicarc: true,
     'comic series': true,
     comicseries: true,
     'comic strip': true,
@@ -9358,7 +9359,7 @@
   };
   var _fetch = fetch$2;
 
-  var _version = '9.0.4-7';
+  var _version = '9.0.4-8';
 
   const unfetch = require$$0__default["default"];
 
