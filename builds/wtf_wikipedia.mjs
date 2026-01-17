@@ -4664,7 +4664,9 @@ var _infoboxes = {
   'magazine series': true,
   magazineseries: true,
   'activity book': true,
-  activitybook: true
+  activitybook: true,
+  'board game': true,
+  boardgame: true
 };
 
 const i18n$2 = i18n$6;

@@ -76,4 +76,6 @@ module.exports = {
   magazineseries: true,
   'activity book': true,
   activitybook: true,
+  'board game': true,
+  boardgame: true,
 }
